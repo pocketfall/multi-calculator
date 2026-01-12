@@ -29,7 +29,7 @@ class TheApp(App):
 			buttons.add_widget(button)
 		return buttons
 
-	def add_to_display(self, button_object):
+	def add_to_display(self, button_object: Button):
 		button_text = button_object.text
 		print(button_text)
 		if button_text != "=":
@@ -41,19 +41,50 @@ class TheApp(App):
 		else:
 			self.do_math()
 	
-	def do_math(self):
+	def do_math(self) -> None:
 		print("doing math here")
-		# TODO:
-		# clear label text on screen
+		self.label_text = self.label.text
+		self.label.text = ""
 
 		# TODO
 		# turn string into list and get numbers from it
+		operation_list = list(self.label_text)
+		operation_dict = self.handle_operation_string(operation_list)
+		#print(operation_dict)
+		numbers = self.get_numbers(operation_list, operation_dict)
+		print(numbers)
 
 		# TODO
 		# do the actual math
 
+	def get_numbers(self, string_list: list[str], operation_dict: dict) -> list:
+		numbers = []
+		previous_key = list(operation_dict.keys())[0]
+		for key, value in operation_dict.items():
+			print(f"current key: {key}")
+			previous_key = key if key == previous_key else previous_key
+			print(f"previous key: {previous_key}")
+			if len(numbers) < 1:
+				number = "".join(string_list[:key])
+			else:
+				if previous_key + 1 == key:
+					number = "".join(string_list[key])
+				else:
+					number = "".join(string_list[previous_key + 1:key])
+				print(f"beyond first number: {number}")
+			numbers.append(int(number))
+		return numbers
+
+	def handle_operation_string(self, operation_list: list[str]) -> dict:
+		operation = {}
+		for idx, character in enumerate(operation_list):
+			try:
+				int(character)
+			except:
+				operation[idx] = character
+		return operation
 	
-	def delete_character(self):
+	def delete_character(self) -> None:
 		self.label_text = self.label.text[:-1]
 		self.label.text = self.label_text
 

@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from components import ButtonGrid, MainLayout
-from config import BUTTONS, FONT_SIZE
+from config import BUTTONS, FONT_SIZE, LABEL_TEXT_SIZE
 
 class TheApp(App):
 	def build(self):
@@ -21,7 +21,7 @@ class TheApp(App):
 		return layout
 	
 	def create_calculator(self) -> ButtonGrid:
-		buttons = ButtonGrid(size_hint= [1, .8])
+		buttons = ButtonGrid(size_hint= [1, .66])
 		for button_text in BUTTONS:
 			button = Button(text= button_text, 
 				   on_press= self.add_to_display, 
@@ -31,48 +31,62 @@ class TheApp(App):
 
 	def add_to_display(self, button_object: Button):
 		button_text = button_object.text
-		print(button_text)
 		if button_text != "=":
 			match button_text:
 				case "BORRAR":
 					self.delete_character()
+				case "AC":
+					self.label.text = ""
+				case "":
+					pass
 				case _:
 					self.label.text = button_text if self.label.text == "0" else self.label.text + button_text
 		else:
-			self.do_math()
+			try:
+				self.do_math()
+			except Exception as e:
+				print(e)
+				self.label.text = "Something broke, please try again"
 	
 	def do_math(self) -> None:
-		print("doing math here")
+		# clear label text
 		self.label_text = self.label.text
 		self.label.text = ""
 
-		# TODO
-		# turn string into list and get numbers from it
+		# extract numbers
 		operation_list = list(self.label_text)
 		operation_dict = self.handle_operation_string(operation_list)
-		#print(operation_dict)
 		numbers = self.get_numbers(operation_list, operation_dict)
-		print(numbers)
 
-		# TODO
-		# do the actual math
+		# sum numbers, we don't actually need all the operators
+		output = sum(numbers)
+		self.label.text = str(output)
 
 	def get_numbers(self, string_list: list[str], operation_dict: dict) -> list:
 		numbers = []
 		previous_key = list(operation_dict.keys())[0]
+		# if there is only one operator the for loop end prematurely so handle that
+		if len(list(operation_dict.keys())) < 2:
+			number1 = "".join(string_list[:previous_key])
+			number2 = "".join(string_list[previous_key + 1:])
+			numbers.append(int(number1))
+			numbers.append(int(number2))
+			return numbers
 		for key, value in operation_dict.items():
-			print(f"current key: {key}")
-			previous_key = key if key == previous_key else previous_key
-			print(f"previous key: {previous_key}")
 			if len(numbers) < 1:
 				number = "".join(string_list[:key])
 			else:
-				if previous_key + 1 == key:
-					number = "".join(string_list[key])
+				if list(operation_dict.keys())[-1] == key:
+					# i do not like this repeated code :(
+					number1 = "".join(string_list[previous_key + 1:key])
+					number2 = "".join(string_list[key + 1:])
+					numbers.append(int(number1))
+					numbers.append(int(number2))
+					return numbers
 				else:
 					number = "".join(string_list[previous_key + 1:key])
-				print(f"beyond first number: {number}")
 			numbers.append(int(number))
+			previous_key = key
 		return numbers
 
 	def handle_operation_string(self, operation_list: list[str]) -> dict:
@@ -89,8 +103,8 @@ class TheApp(App):
 		self.label.text = self.label_text
 
 	def create_label(self) -> Label:
-		display_label = Label(text= self.label_text, size_hint= [1, .2],
-						font_size= FONT_SIZE)
+		display_label = Label(text= self.label_text, size_hint= [1, .33],
+						font_size= LABEL_TEXT_SIZE)
 		return display_label
 
 if __name__ == "__main__":

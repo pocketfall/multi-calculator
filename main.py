@@ -21,12 +21,7 @@ class TheApp(App):
 		return layout
 	
 	def create_calculator(self) -> ButtonGrid:
-		buttons = ButtonGrid(size_hint= [1, .66])
-		for button_text in BUTTONS:
-			button = Button(text= button_text, 
-				   on_press= self.add_to_display, 
-				   font_size= FONT_SIZE) 
-			buttons.add_widget(button)
+		buttons = ButtonGrid(self.add_to_display)
 		return buttons
 
 	def add_to_display(self, button_object: Button):
@@ -65,7 +60,7 @@ class TheApp(App):
 	def get_numbers(self, string_list: list[str], operation_dict: dict) -> list:
 		numbers = []
 		previous_key = list(operation_dict.keys())[0]
-		# if there is only one operator the for loop end prematurely so handle that
+		# if there is only one operator the for loop, it ends prematurely so handle that
 		if len(list(operation_dict.keys())) < 2:
 			number1 = "".join(string_list[:previous_key])
 			number2 = "".join(string_list[previous_key + 1:])

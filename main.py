@@ -6,6 +6,8 @@ from kivy.properties import StringProperty, NumericProperty, DictProperty
 from components import ButtonGrid, MainLayout, Manager, InterfaceContainer, ScreenSwitchLeft, ScreenSwitchRight
 from config import BUTTONS, FONT_SIZE, LABEL_TEXT_SIZE, SCREENS, SCREEN_BUTTON_COLORS
 
+__version__ = "0.1.0"
+
 class TheApp(App):
 	label_text_size = StringProperty(LABEL_TEXT_SIZE)
 	font_size = NumericProperty(FONT_SIZE)

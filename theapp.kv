@@ -1,5 +1,7 @@
 <InterfaceContainer>:
   MainLayout:
+    grid_color: app.colors.get(root.name, "no data found")
+    
 
 <MainLayout>:
   orientation: "vertical"
@@ -9,6 +11,7 @@
     text: root.label_text
     font_size: app.label_text_size
   ButtonGrid:
+    button_color: root.grid_color
     callback: root.add_to_display
     label_text: root.label_text
     id: button_grid
@@ -16,3 +19,27 @@
 
 <ButtonGrid>:
   cols: 4
+
+<CalculatorButton>:
+  font_size: app.font_size
+  border_radius: 100
+  background_color: 
+
+<ScreenSwitchLeft>:
+  anchor_y: "center"
+  anchor_x: "left"
+  SwitchButton:
+    text: "<"
+    on_press: app.switch_left()
+
+<ScreenSwitchRight>:
+  anchor_y: "center"
+  anchor_x: "right"
+  SwitchButton:
+    text: ">"
+    on_press: app.switch_right()
+
+<SwitchButton>:
+  size_hint: [.1, .1]
+  font_size: app.font_size
+  background_color: [.3, .3, .3, .3]

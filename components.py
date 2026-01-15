@@ -3,7 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.button import Button
-from kivy.properties import ObjectProperty, StringProperty, ListProperty
+from kivy.properties import ObjectProperty, StringProperty, DictProperty, ListProperty
 from config import BUTTONS, FONT_SIZE, LABEL_TEXT_SIZE, SCREENS
 
 class Manager(ScreenManager):
@@ -12,12 +12,18 @@ class Manager(ScreenManager):
 class InterfaceContainer(Screen):
 	pass
 
-class ScreenSwitches(AnchorLayout):
+class ScreenSwitchRight(AnchorLayout):
+	pass
+
+class ScreenSwitchLeft(AnchorLayout):
+	pass
+
+class SwitchButton(Button):
 	pass
 
 class MainLayout(BoxLayout):
 	label_text = StringProperty("0")
-	screen_names = ListProperty(None)
+	grid_color = ListProperty(None)
 
 	def add_to_display(self, button_object: Button) -> None:
 		button_text = button_object.text
@@ -91,18 +97,25 @@ class MainLayout(BoxLayout):
 				operation[idx] = character
 		return operation
 
+class CalculatorButton(Button):
+	pass
+
 class ButtonGrid(GridLayout):
 	callback = ObjectProperty(None)
 	label_text = StringProperty(None)
+	button_color = ListProperty(None)
 
 	def on_kv_post(self, base_widget) -> None:
 		self.add_buttons()
+		print(self.button_color)
 
 	def add_buttons(self) -> None:
 		for button_text in BUTTONS:
-			button = Button(text= button_text,
+			button = CalculatorButton(text= button_text,
 				   font_size= FONT_SIZE)
 			if self.callback and self.label_text:
 				button.bind(on_press= self.callback)
+				if self.button_color:
+					button.background_color = self.button_color
 			self.add_widget(button)
 
